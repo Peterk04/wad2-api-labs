@@ -3,7 +3,7 @@ import User from './userModel';
 import asyncHandler from 'express-async-handler';
 
 
-const router = express.Router(); // eslint-disable-line
+const router = express.Router();
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -11,7 +11,6 @@ router.get('/', async (req, res) => {
     res.status(200).json(users);
 });
 
-// register(Create) User
 // register(Create)/Authenticate User
 router.post('/', asyncHandler(async (req, res) => {
     if (req.query.action === 'register') {  // if action is 'register' then save to DB
@@ -25,7 +24,7 @@ router.post('/', asyncHandler(async (req, res) => {
         const user = await User.findOne(req.body);
         if (!user) {
             return res.status(401).json({ code: 401, msg: 'Authentication failed' });
-        } else {
+        }else{
             return res.status(200).json({ code: 200, msg: "Authentication Successful", token: 'TEMPORARY_TOKEN' });
         }
     }
