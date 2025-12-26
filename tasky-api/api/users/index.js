@@ -63,16 +63,16 @@ async function registerUser(req, res) {
 async function authenticateUser(req, res) {
     const user = await User.findByUserName(req.body.username);
     if (!user) {
-        return res
-            .status(401)
-            .json({ success: false, msg: 'Authentication failed. User not found.' });
+        return res.status(401).json({ success: false, msg: 'Authentication failed. User not found.' });
     }
 
-    return res.status(200).json({
-        success: true,
-        msg: 'Authentication successful.',
-        token: 'TEMPORARY_TOKEN',
-    });
+    const isMatch = await user.comparePassword(req.body.password);
+    if (isMatch) {
+        const token = jwt.sign({ username: user.username }, process.env.SECRET);
+        res.status(200).json({ success: true, token: 'BEARER ' + token });
+    } else {
+        res.status(401).json({ success: false, msg: 'Wrong password.' });
+    }
 }
 
 export default router;
